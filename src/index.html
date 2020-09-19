@@ -1,12 +1,39 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <link rel="stylesheet" href="index.css">
-  </head>
-  <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World!</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="box">
+
+    <span class="label">CPU (%)</span>
+    <span id="cpu"></span>
+  </div>
+  <div class="box">
+    <span class="label">Free Mem </span>
+    <span id="mem"></span>
+  </div>
+  <div class="box">
+    <span class="label">Total Memory </span>
+    <span id="totalMem"></span>
+  </div>
+</body>
+<script>
+  const electron = require("electron");
+  // console.log(electron)
+  const { ipcRenderer } = electron;
+
+  ipcRenderer.on("cpu", (event, data) => {
+    // debugger;
+    console.log(data)
+    document.getElementById("cpu").innerText = `${data.cpu_usage_per.toFixed(2)}%`
+    document.getElementById("mem").innerText = `${data.mem_usage_per.toFixed(2)}%`
+    document.getElementById("totalMem").innerText = `${data.total_mem_gb.toFixed(2)} GB`
+  })
+</script>
+
 </html>

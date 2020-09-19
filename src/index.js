@@ -1,16 +1,22 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-
+const os = require("os-utils")
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
 
+
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 2000,
     height: 600,
+    icon:`${__dirname}/icon.ico` ,
+    webPreferences:{
+      nodeIntegration:true 
+    }
   });
 
   // and load the index.html of the app.
@@ -18,6 +24,20 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+  setInterval(() => {
+
+    os.cpuUsage(function(v){
+    v = v * 100
+    console.log(`CPU Usage (%): ${v}`)
+    console.log(`Mem Usage (%): ${os.freememPercentage() * 100}`)
+    console.log(`Total Mem (GB): ${os.totalmem() /1024}`)
+    const UsageData = {cpu_usage_per : v , mem_usage_per : os.freememPercentage() * 100 , total_mem_gb : os.totalmem() /1024 }
+    mainWindow.webContents.send("cpu" , UsageData)
+    console.log(UsageData)
+  })
+
+  }, 1000);
+  
 };
 
 // This method will be called when Electron has finished
